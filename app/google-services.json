@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "412123842335",
+    "firebase_url": "https://manage-tenants-4759f-default-rtdb.firebaseio.com",
+    "project_id": "manage-tenants-4759f",
+    "storage_bucket": "manage-tenants-4759f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:412123842335:android:eb0c446dc5a8e5ed0b922a",
+        "android_client_info": {
+          "package_name": "com.rachel.managetenanants"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "412123842335-iht36bjr3jn7ahuj3lkvd0uur93gpcjl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsOZXr3IgUYFFEjHuv-psYZtauduQA8Ic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "412123842335-iht36bjr3jn7ahuj3lkvd0uur93gpcjl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
