@@ -36,7 +36,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class RegistrationActivity extends AppCompatActivity {
-    private Button registerButton;
     private FirebaseAuth mAuth;
     private String email;
     private String password;
@@ -74,12 +73,11 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
 
-
+    // checks if an id already exists - and based on it decides if to create the user
     public void checkIfUserExists(View view){
         String currentId = ((EditText)findViewById(R.id.Id)).getText().toString();
         DatabaseReference ref = database.getReference("ids");
 
-        // checks if an id already exists - and based on it decides if to create the user
         ref.addValueEventListener(new ValueEventListener() {
             boolean userDoesntExist = true;
             @Override
@@ -95,15 +93,56 @@ public class RegistrationActivity extends AppCompatActivity {
                 if (userDoesntExist){
                     register(currentId);
                 }
+                else
+                    Toast.makeText(RegistrationActivity.this, "duplicate id number", Toast.LENGTH_LONG).show();
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(RegistrationActivity.this, "failed", Toast.LENGTH_LONG).show();
             }
         });
-
     }
+
+    // makes sure apartment number isn't duplicate
+    // and only then create the tenant
+    private void againstDuplicateApartment(String numberOfApartment, String uid, String firstName, String lastName, String id){
+        String currentApartmentNumber = ((EditText)findViewById(R.id.apartmentNumber)).getText().toString();
+        DatabaseReference ref1 = database.getReference("apartmentNumbersOnly");
+
+        ref1.addValueEventListener(new ValueEventListener() {
+            boolean apartmentDoesntExist = true;
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    for (DataSnapshot data:dataSnapshot.getChildren()){
+                        String number = data.getValue(String.class);
+                        if (currentApartmentNumber.equals(number)){
+                            apartmentDoesntExist = false;
+                        }
+                    }
+                }
+                if (apartmentDoesntExist){
+                    DatabaseReference myRef2 = database.getReference("apartmentNumbersOnly").child(uid);
+                    myRef2.setValue(numberOfApartment);
+                    Tenant t = new Tenant(firstName, lastName, id, Integer.parseInt(numberOfApartment));
+                    DatabaseReference myRef = database.getReference("Tenants").child(uid);
+                    myRef.setValue(t);
+                    actualUserType = t.getClass().getName();
+                    // create a path for the type of user and save in {uid <-> type}
+                    DatabaseReference myRef3 = database.getReference("typeDefined").child(uid);
+                    myRef3.setValue(actualUserType);
+                    sendMetoMain();
+                }
+                else
+                    Toast.makeText(RegistrationActivity.this, "duplicate apartment number", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(RegistrationActivity.this, "failed", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 
     public void register(String id){
 
@@ -113,14 +152,13 @@ public class RegistrationActivity extends AppCompatActivity {
         String firstName = ((EditText)findViewById(R.id.FirstName)).getText().toString();
         String lastName = ((EditText)findViewById(R.id.LastName)).getText().toString();
 
+        //check to make sure we have all details before creating user
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
-
-
                          if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
                             String uid = user.getUid(); // get current user id
@@ -131,18 +169,10 @@ public class RegistrationActivity extends AppCompatActivity {
                             // getting the current fragment that's active on the activity
                             target = fragmentManager.getFragments().get(0);
                             if (chosenType == 1){
-                                // registerCall gets the inputs from the tenants fragment
                                 String response = ((TenantDetailsFragment)target).registerCall();
-                                Tenant t = new Tenant(firstName, lastName, id, Integer.parseInt(response));
-                                DatabaseReference myRef = database.getReference("Tenants").child(uid);
-                                myRef.setValue(t);
-                                actualUserType = t.getClass().getName();
+                                // registerCall gets the inputs from the tenants fragment
 
-                                // create a path for the type of user and save in {uid <-> type}
-                                DatabaseReference myRef3 = database.getReference("typeDefined").child(uid);
-                                myRef3.setValue(actualUserType);
-
-
+                                againstDuplicateApartment(response, uid, firstName, lastName, id);
                             } else {
                                 // registerCallSeniority gets the input from the homeowners fragment
                                 String response = ((HomeAssociationDetailsFragment)target).registerCallSeniority();
@@ -154,10 +184,8 @@ public class RegistrationActivity extends AppCompatActivity {
                                 // create a path for the type of user and save in {uid <-> type}
                                 DatabaseReference myRef3 = database.getReference("typeDefined").child(uid);
                                 myRef3.setValue(actualUserType);
+                                sendMetoMain();
                             }
-
-                            sendMetoMain();
-
                         } else {
                             Toast.makeText(RegistrationActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();

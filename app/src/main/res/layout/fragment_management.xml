@@ -36,7 +36,7 @@
                     android:text="please choose an apartment number" />
 
                 <EditText
-                    android:id="@+id/apartmentNumberFromServer"
+                    android:id="@+id/apartmentNumberToCheck"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

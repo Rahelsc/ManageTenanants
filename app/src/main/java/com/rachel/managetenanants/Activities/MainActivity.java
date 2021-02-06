@@ -28,8 +28,6 @@ import com.rachel.managetenanants.Fragments.ManagementFragment;
 import com.rachel.managetenanants.Fragments.TenantFragment;
 import com.rachel.managetenanants.R;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -39,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private final String KEY = "userChoice";
     private final String SenderKey = "ISent";
 
-    private int chosenType;
     private String caller = null;
     private String actualUserType;
     private final String KeyUserType = "type";
@@ -56,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView name;
     private TextView AN;
-    private TextView tenantMonthsPaid;
     private TextView payments;
 
 
@@ -67,9 +63,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        updateLocalHashs();
+
+        updateLocalHashes();
 
         caller = getIntent().getStringExtra(SenderKey);
+        actualUserType = getIntent().getStringExtra(KeyUserType);
 
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
@@ -84,9 +82,8 @@ public class MainActivity extends AppCompatActivity {
         // the caller string will contain a unique id from the sender and so will not be null
         // at this point a choice must be made what fragment to show,
         // based on the type of user we're handling
-        // ---------------------- must change login activity
-        if (caller!=null){
-            actualUserType = getIntent().getStringExtra(KeyUserType);
+        else if (caller!=null){
+            Log.d("yoohoo", "onCreate: "+actualUserType);
             switch (actualUserType){
                 case "com.rachel.managetenanants.Classes.Tenant":
                     fragmentTransaction.replace(R.id.fragmentPlacementMain,new TenantFragment()).addToBackStack(null).commit();
@@ -110,7 +107,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    //for home owner association
+    // triggered on click of the plus button - makes the mini form of updating payments appear
     public void visiblePayment(View view) {
         apartment = findViewById(R.id.plus1);
         month = findViewById(R.id.plus2);
@@ -122,30 +120,37 @@ public class MainActivity extends AppCompatActivity {
         update.setVisibility(View.VISIBLE);
     }
 
+    // gets called from the home owner form
+    // updates the relevant apartment payment
     public void paymentUpdate(View view) {
         String apartmentNum = apartment.getText().toString();
         String monthPaid = month.getText().toString();
         String sumPaid = payment.getText().toString();
-        FirebaseUser user = mAuth.getCurrentUser();
-        String uid = user.getUid(); // get current user id
         HashMap<String, String> p = new HashMap<String, String>();
         p.put(monthPaid, sumPaid);
         DatabaseReference myRef = database.getReference("apartmentPayment/"+apartmentNum+"/"+monthPaid);
         myRef.setValue(sumPaid);
     }
 
+    // for home owner association form
+    // set the building payment field
     public void updateBuildingPayments(View view){
         TextView buildingIncome = findViewById(R.id.response_income);
         buildingIncome.setText(monthsPaid.toString());
     }
 
-    private void updateLocalHashs(){
+    // updates the local hashes that save the current state of db to hashes
+    // specifically saves the payment in two states -
+    // one hash for apartment to months key value pair
+    // and another hash for summing all payments of the building per month
+    private void updateLocalHashes(){
         DatabaseReference ref = database.getReference().child("apartmentPayment");
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 monthsPaid.clear();
+                monthsPaidPerApartment.clear();
                 if (dataSnapshot.exists()){
                     for (DataSnapshot data:dataSnapshot.getChildren()){
                         String s = data.getKey();
@@ -159,7 +164,6 @@ public class MainActivity extends AppCompatActivity {
                             else monthsPaid.put(k, Integer.parseInt(h));
                             monthsPaidPerApartment.get(s).add(k);
                             apartmentPlusPayments.get(s).put(k,h);
-                            Log.d("hezi-AND-anis", apartmentPlusPayments.toString());
                         }
                     }
                 }
@@ -171,41 +175,49 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // home owner form
+    // sets the apartments paid field
     public void getApartmentMonthsPaid(View view) {
-        String apartNum = ((EditText)findViewById(R.id.apartmentNumberFromServer)).getText().toString();
+        String apartNum = ((EditText)findViewById(R.id.apartmentNumberToCheck)).getText().toString();
         TextView response_payment = findViewById(R.id.reponse_rent_from_1);
-        response_payment.setText(monthsPaidPerApartment.get(apartNum).toString());
+        Log.d("trial1", apartNum);
+        if (apartNum != null && monthsPaidPerApartment.get(apartNum) != null)
+        {
+            Log.d("trial", "offff");
+            response_payment.setText(monthsPaidPerApartment.get(apartNum).toString());
+        }
+
+        else response_payment.setText("No payment received");
     }
 
+    // home owner
+    // gets all paid months of a certain apartment
     public void getAllPaymentsPerTenant(View view) {
         TextView allPaid = findViewById(R.id.response_all_paid);
         allPaid.setText(monthsPaidPerApartment.toString());
     }
 
-    public void getTenantDetails(){
-        Log.d("ze kore?", "getTenantDetails: ");
+    // tenant form
+    // sets all details for the tenant form
+    private void getTenantDetails(){
         FirebaseUser user = mAuth.getCurrentUser();
         String userId = user.getUid();
-        Log.d("user", "getTenantDetails: "+userId);
 
         DatabaseReference ref = database.getReference("Tenants").child(userId);
-
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                monthsPaid.clear();
                 if (dataSnapshot.exists()){
                     Tenant ten = dataSnapshot.getValue(Tenant.class);
                     name = findViewById(R.id.fullTenantName);
                     name.setText(ten.getFirstName()+" "+ten.getLastName());
                     AN = findViewById(R.id.ApartmentNumberFromDB);
                     AN.setText(String.valueOf(ten.getApartmentNumber()));
-                    tenantMonthsPaid = findViewById(R.id.monthsPaidFromDB);
-                    String s = monthsPaidPerApartment.get(String.valueOf(ten.getApartmentNumber())).toString();
-                    tenantMonthsPaid.setText(s);
                     payments = findViewById(R.id.MonthlyPaymentFromDB);
-                    payments.setText(apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())).toString());
-                    Log.d("---9999-----------", ten.toString());
+                    if (apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())) != null){
+                        payments.setText(apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())).toString());
+                    }
+                    else payments.setText("No payments received");
                 }
             }
             @Override

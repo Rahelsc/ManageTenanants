@@ -46,6 +46,9 @@ public class LoginActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        String userId = user.getUid();
+        checkType(userId);
 
         signUpButton = findViewById(R.id.buttonSignUp);
         signUpButton.setOnClickListener(new View.OnClickListener() {
@@ -65,15 +68,15 @@ public class LoginActivity extends AppCompatActivity {
                 signIn();
             }
         });
-        FirebaseUser user = mAuth.getCurrentUser();
-        String userId = user.getUid();
-        checkType(userId);
 
     }
 
+    // to check which type the current user is in order to load the correct fragment
     private void checkType(String userId){
+        Log.d("dov", "checkType: ");
         DatabaseReference myRef = database.getReference("typeDefined");
-        myRef.addValueEventListener(new ValueEventListener() {
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
@@ -84,13 +87,15 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
+    // sign in - if successful sends the user to main, with the data of which fragment to load,
+    // based on variable - actualUserType
     private void signIn(){
+
+        Log.d("mom", "signIn: ");
         email = ((EditText)findViewById(R.id.Email)).getText().toString();
         password = ((EditText)findViewById(R.id.Password)).getText().toString();
 
@@ -108,13 +113,16 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
+        Log.d("dovv", "signIn: 2");
     }
 
 
     private void sendMetoMain(){
+        Log.d("shai", "sendMetoMain: ");
         Intent sendUserUI = new Intent(LoginActivity.this, MainActivity.class);
+        // type of user being sent to main to load correct fragment
         sendUserUI.putExtra(KeyUserType, actualUserType);
-        // unique id
+        // unique id of sender
         sendUserUI.putExtra(SenderKey, "login");
         startActivity(sendUserUI);
     }
