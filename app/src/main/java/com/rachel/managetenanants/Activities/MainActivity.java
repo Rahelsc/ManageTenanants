@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         updateLocalHashes();
 
         caller = getIntent().getStringExtra(SenderKey);
-        actualUserType = getIntent().getStringExtra(KeyUserType);
 
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
@@ -83,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
         // at this point a choice must be made what fragment to show,
         // based on the type of user we're handling
         else if (caller!=null){
-            Log.d("yoohoo", "onCreate: "+actualUserType);
+            actualUserType = getIntent().getStringExtra(KeyUserType);
+            Log.d("yoohoo", "please?: "+actualUserType);
             switch (actualUserType){
                 case "com.rachel.managetenanants.Classes.Tenant":
                     fragmentTransaction.replace(R.id.fragmentPlacementMain,new TenantFragment()).addToBackStack(null).commit();

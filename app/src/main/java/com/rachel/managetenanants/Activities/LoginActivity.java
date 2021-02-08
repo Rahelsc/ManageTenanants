@@ -46,9 +46,7 @@ public class LoginActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        String userId = user.getUid();
-        checkType(userId);
+
 
         signUpButton = findViewById(R.id.buttonSignUp);
         signUpButton.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +81,8 @@ public class LoginActivity extends AppCompatActivity {
                     DataSnapshot user = dataSnapshot.child(userId);
                     String userType = user.getValue(String.class);
                     actualUserType = userType;
+                    Log.d("new try", actualUserType);
+                    sendMetoMain();
                 }
             }
 
@@ -104,8 +104,11 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            String userId = user.getUid();
+                            Log.d("jjjjj", userId);
+                            checkType(userId);
                             // Sign in success, update UI with the signed-in user's information
-                            sendMetoMain();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication failed.",

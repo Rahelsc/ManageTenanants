@@ -64,10 +64,10 @@ public class RegistrationActivity extends AppCompatActivity {
         switch (chosenType){
             case 1:
                 fragmentTransaction.add(R.id.tenantOrHome,new TenantDetailsFragment()).addToBackStack(null).commit();
-            break;
+                break;
             case 2:
                 fragmentTransaction.add(R.id.tenantOrHome,new HomeAssociationDetailsFragment()).addToBackStack(null).commit();
-            break;
+                break;
         }
 
     }
@@ -159,7 +159,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                         if (task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
                             String uid = user.getUid(); // get current user id
                             // updating a path for the user's id - for easier access to the id data for check if exists
