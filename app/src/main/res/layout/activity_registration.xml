@@ -72,7 +72,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="0.8"
-            android:onClick="checkIfUserExists"
+            android:onClick="makeRequired"
             android:paddingLeft="150px"
             android:paddingRight="150px"
             android:text="Sign Up" />

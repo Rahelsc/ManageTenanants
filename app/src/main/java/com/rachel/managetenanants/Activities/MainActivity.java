@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView payments;
 
     private ProgressBar progressBar;
+    private Button signOutButton;
+
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -87,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         else if (caller!=null){
             progressBar = findViewById(R.id.progressBar);
             progressBar.setVisibility(View.VISIBLE); // make progressbar visible
+            signOutButton = findViewById(R.id.signOutButton);
+            signOutButton.setVisibility(View.VISIBLE);
 
             actualUserType = getIntent().getStringExtra(KeyUserType);
             Log.d("yoohoo", "please?: "+actualUserType);
@@ -240,5 +245,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    // signing out of app and using intent going to login
+    public void signOut(View view) {
+        mAuth.signOut();
+        Intent userSignOut = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(userSignOut);
     }
 }

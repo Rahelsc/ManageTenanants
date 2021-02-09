@@ -66,12 +66,4 @@ public class HomeAssociationDetailsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_home_association_details, container, false);
         return view;
     }
-
-    // a function that returns the contents of the input of this fragment
-    public String registerCallSeniority(){
-        String seniority = ((EditText)view.findViewById(R.id.TextSeniority)).getText().toString();
-        if (seniority.isEmpty())
-            return null;
-        return seniority;
-    }
 }

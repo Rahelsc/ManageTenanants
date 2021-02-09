@@ -15,6 +15,15 @@
         android:visibility="gone"
         tools:visibility="gone" />
 
+    <Button
+        android:id="@+id/signOutButton"
+        android:layout_width="49dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@drawable/sign_out_svgrepo_com"
+        android:onClick="signOut"
+        android:visibility="gone" />
+
     <FrameLayout
         android:id="@+id/fragmentPlacementMain"
         android:layout_width="match_parent"

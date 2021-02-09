@@ -66,12 +66,4 @@ public class TenantDetailsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_tenant_details, container, false);
         return view;
     }
-
-    // a function that returns the contents of the input of this fragment
-    public String registerCall(){
-        String apartmentNumber = ((EditText)view.findViewById(R.id.apartmentNumber)).getText().toString();
-        if (apartmentNumber.isEmpty())
-            return null;
-        return apartmentNumber;
-    }
 }

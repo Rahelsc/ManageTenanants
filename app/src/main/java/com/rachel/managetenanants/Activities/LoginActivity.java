@@ -3,6 +3,7 @@ package com.rachel.managetenanants.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Layout;
@@ -80,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // get all input by id - globally for this Activity
+    @SuppressLint("WrongViewCast")
     private void getAllFormInputs(){
         signUpButton = findViewById(R.id.buttonSignUp);
         loginButton = findViewById(R.id.buttonLogin);
@@ -165,9 +167,7 @@ public class LoginActivity extends AppCompatActivity {
         password = pas.getText().toString();
         String pass = p.getText().toString();
         String rePass = rp.getText().toString();
-        // even after checking for null it still crashes ----------------------------- what the hell?
-        if (email!=null && password!=null && pass!=null && rePass!=null && pass.equals(rePass)){
-            Log.d("TAG ------------", "changePasswordAction: "+email);
+        if (!email.equals("") && !password.equals("") && !pass.equals("") && !rePass.equals("") && pass.equals(rePass)){
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -198,12 +198,10 @@ public class LoginActivity extends AppCompatActivity {
 
     // to make the change password form disappear
     public void leaveChangePassword(View view) {
-        Log.d("????", "leaveChangePassword: ");
         visibleGoneOfPasswordForm();
     }
 
     private void visibleGoneOfPasswordForm(){
-        Log.d("++666===/////=+++??", "visibleGoneOfPasswordForm: ");
         p.setText("");
         rp.setText("");
         e.setText("");
