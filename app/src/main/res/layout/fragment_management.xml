@@ -16,28 +16,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Hello Home owners association" />
+            android:text="Hello Home owners association"
+            android:textSize="18sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="50px"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.7"
+                android:text="please choose an apartment number"
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="50px"
+                android:layout_weight="0.3"
                 android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="please choose an apartment number" />
 
                 <EditText
                     android:id="@+id/apartmentNumberToCheck"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
@@ -45,7 +50,7 @@
 
                 <Button
                     android:id="@+id/Send"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="getApartmentMonthsPaid"
@@ -66,15 +71,19 @@
 
             <Button
                 android:id="@+id/ask_for_rent_paid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
                 android:onClick="getAllPaymentsPerTenant"
                 android:text="Rents Paid List" />
 
             <TextView
                 android:id="@+id/response_all_paid"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="18sp" />
 
         </LinearLayout>
 
@@ -83,6 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:contentDescription="add payment for a tenant"
             android:onClick="visiblePayment"
             android:src="@android:drawable/btn_plus" />
 
@@ -125,11 +135,10 @@
 
         <Button
             android:id="@+id/updateButton"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|center_horizontal"
-            android:layout_marginLeft="350px"
-            android:layout_marginRight="350px"
+            android:layout_marginTop="25px"
             android:gravity="center|center_horizontal"
             android:onClick="paymentUpdate"
             android:text="Update"
@@ -138,12 +147,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="50px"
             android:orientation="vertical">
 
             <Button
                 android:id="@+id/show_total_payment"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:onClick="updateBuildingPayments"
                 android:text="Total Payment" />
 

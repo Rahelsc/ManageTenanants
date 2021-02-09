@@ -8,10 +8,12 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView AN;
     private TextView payments;
 
+    private ProgressBar progressBar;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -82,6 +85,9 @@ public class MainActivity extends AppCompatActivity {
         // at this point a choice must be made what fragment to show,
         // based on the type of user we're handling
         else if (caller!=null){
+            progressBar = findViewById(R.id.progressBar);
+            progressBar.setVisibility(View.VISIBLE); // make progressbar visible
+
             actualUserType = getIntent().getStringExtra(KeyUserType);
             Log.d("yoohoo", "please?: "+actualUserType);
             switch (actualUserType){
@@ -93,6 +99,13 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTransaction.replace(R.id.fragmentPlacementMain,new ManagementFragment()).addToBackStack(null).commit();
                     break;
             }
+            // delay the dismissal of the progress bar
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }, 2000);
         }
     }
 
