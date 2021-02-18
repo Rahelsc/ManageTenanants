@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private FirebaseAuth mAuth;
     final HashMap<String, Integer> monthsPaid = new HashMap<>();
-    final HashMap<String, ArrayList> monthsPaidPerApartment = new HashMap<>();
+    final HashMap<String, ArrayList<String>> monthsPaidPerApartment = new HashMap<>();
     final HashMap<String, HashMap<String,String>> apartmentPlusPayments = new HashMap<>();
 
     private TextView name;
@@ -102,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView paymentsPresentation;
     private ArrayList<MonthSumDataModel> incomeArrayList;
     private BuildingDataAdapter buildingDataAdapter;
+
+    RecyclerView paymentsPerTenantView;
 
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -159,21 +161,20 @@ public class MainActivity extends AppCompatActivity {
     // activated by the onSelectedItem eventListener in the management fragment
     // sets the visibility of all items in fragment based on choice in spinner
     public void handleSelection(View view, int position){
-        Log.d("click", "works? ");
         View payingView = findViewById(R.id.payingView);
         paymentsPresentation = findViewById(R.id.recycleBuildingIncome);
-        View allPaymentsPerTenantView = findViewById(R.id.allPaymentsPerTenantView);
         View apartmentMonthsPaidView = findViewById(R.id.apartmentMonthsPaidView);
+        paymentsPerTenantView = findViewById(R.id.paymentsPerTenantView);
 
         switch (position){
             case 1:
                 apartmentMonthsPaidView.setVisibility(View.VISIBLE);
                 payingView.setVisibility(View.GONE);
                 paymentsPresentation.setVisibility(View.GONE);
-                allPaymentsPerTenantView.setVisibility(View.GONE);
+                paymentsPerTenantView.setVisibility(View.GONE);
                 break;
             case 2:
-                allPaymentsPerTenantView.setVisibility(View.VISIBLE);
+                paymentsPerTenantView.setVisibility(View.VISIBLE);
                 paymentsPresentation.setVisibility(View.GONE);
                 apartmentMonthsPaidView.setVisibility(View.GONE);
                 payingView.setVisibility(View.GONE);
@@ -182,14 +183,14 @@ public class MainActivity extends AppCompatActivity {
             case 3:
                 payingView.setVisibility(View.VISIBLE);
                 paymentsPresentation.setVisibility(View.GONE);
-                allPaymentsPerTenantView.setVisibility(View.GONE);
+                paymentsPerTenantView.setVisibility(View.GONE);
                 apartmentMonthsPaidView.setVisibility(View.GONE);
                 break;
             case 4:
                 paymentsPresentation.setVisibility(View.VISIBLE);
                 apartmentMonthsPaidView.setVisibility(View.GONE);
                 payingView.setVisibility(View.GONE);
-                allPaymentsPerTenantView.setVisibility(View.GONE);
+                paymentsPerTenantView.setVisibility(View.GONE);
                 updateBuildingPayments();
                 break;
 
@@ -284,10 +285,14 @@ public class MainActivity extends AppCompatActivity {
     public void getApartmentMonthsPaid(View view) {
         String apartNum = ((EditText)findViewById(R.id.apartmentNumberToCheck)).getText().toString();
         TextView response_payment = findViewById(R.id.reponse_rent_from_1);
-        Log.d("trial1", apartNum);
         if (apartNum != null && monthsPaidPerApartment.get(apartNum) != null)
         {
-            response_payment.setText(monthsPaidPerApartment.get(apartNum).toString());
+            String monthsPaidInString = "";
+            for (String month: monthsPaidPerApartment.get(apartNum)) {
+                String temp = Months.valueOfLabel(month).toString();
+                monthsPaidInString+= (monthsPaidInString.equals(""))?temp:"\n" +temp;
+            }
+            response_payment.setText(monthsPaidInString);
         }
 
         else response_payment.setText("No payments made");
@@ -296,8 +301,22 @@ public class MainActivity extends AppCompatActivity {
     // home owner
     // gets all paid months of a certain apartment
     public void getAllPaymentsPerTenant() {
-        TextView allPaid = findViewById(R.id.allPaymentsPerTenantView);
-        allPaid.setText(monthsPaidPerApartment.toString());
+        paymentsPerTenantView.setHasFixedSize(true);
+        paymentsPerTenantView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        ArrayList<MonthSumDataModel> apartmentToMonthsPaid = new ArrayList<>();
+        // looping over the data and updating the arraylist
+        for (String key: monthsPaidPerApartment.keySet()) {
+            String sumMonths = "";
+            for (String month:monthsPaidPerApartment.get(key)) {
+                String MonthInWord = Months.valueOfLabel(month).toString(); // coverts number to word
+                sumMonths+=(sumMonths.equals(""))?MonthInWord:"\n"+MonthInWord; // string together all months
+            }
+            apartmentToMonthsPaid.add(new MonthSumDataModel("Apartment "+key, sumMonths));
+        }
+        // creating the data adapter and associating it with the arraylist containing the data
+        BuildingDataAdapter buildingDataAdapter = new BuildingDataAdapter(apartmentToMonthsPaid, this);
+        // connecting the visual representation if the recycle view with the adapter
+        paymentsPerTenantView.setAdapter(buildingDataAdapter);
     }
 
     // tenant form

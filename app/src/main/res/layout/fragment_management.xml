@@ -37,14 +37,10 @@
             android:layout_height="wrap_content"
             android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/allPaymentsPerTenantView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/paymentsPerTenantView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:fontFamily="@font/amita_bold"
-            android:textColor="@color/white"
-            android:textSize="18sp"
             android:visibility="gone" />
 
         <LinearLayout
@@ -91,8 +87,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:fontFamily="@font/amita_bold"
+                android:layout_marginTop="20dp"
+                android:textAlignment="center"
                 android:textColor="@color/white"
+                android:textSize="24sp"
                 android:visibility="visible" />
 
         </LinearLayout>
