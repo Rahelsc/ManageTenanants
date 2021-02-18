@@ -4,6 +4,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Build;
@@ -13,8 +15,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.rachel.managetenanants.Classes.BuildingDataAdapter;
+import com.rachel.managetenanants.Classes.BuildingIncomeDataModel;
 import com.rachel.managetenanants.Classes.Tenant;
 import com.rachel.managetenanants.Fragments.ChoiceOfUserFragment;
 import com.rachel.managetenanants.Fragments.ManagementFragment;
@@ -33,6 +37,43 @@ import com.rachel.managetenanants.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
+// to display the name of the month instead of a number representation
+enum Months{
+    JANUARY("1"),
+    FEBRUARY("2"),
+    MARCH("3"),
+    APRIL("4"),
+    MAY("5"),
+    JUNE("6"),
+    JULY("7"),
+    AUGUST("8"),
+    SEPTEMBER("9"),
+    OCTOBER("10"),
+    NOVEMBER("11"),
+    DECEMBER("12");
+
+    public final String value;
+
+    private static final Map<String, Months> BY_VALUE = new HashMap<>();
+
+    Months(String value) {
+        this.value = value;
+    }
+
+    // caching the key-value pairs of the enum using a static operation and a hashMap
+    static {
+        for (Months e: values()) {
+            BY_VALUE.put(e.value, e);
+        }
+    }
+
+    // will return the value of enum based on key(string representation of the month number)
+    public static Months valueOfLabel(String label) {
+        return BY_VALUE.get(label);
+    }
+}
 
 public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
@@ -47,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText apartment;
     private EditText month;
     private EditText payment;
-    private Button update;
     private FirebaseDatabase database;
     private FirebaseAuth mAuth;
     final HashMap<String, Integer> monthsPaid = new HashMap<>();
@@ -57,9 +97,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView name;
     private TextView AN;
     private TextView payments;
+    private TableRow tableRow;
 
     private ProgressBar progressBar;
     private Button signOutButton;
+
+    private RecyclerView paymentsPresentation;
+    private ArrayList<BuildingIncomeDataModel> incomeArrayList;
+    private BuildingDataAdapter buildingDataAdapter;
 
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -102,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case "com.rachel.managetenanants.Classes.HomeOwnerAssociation":
                     fragmentTransaction.replace(R.id.fragmentPlacementMain,new ManagementFragment()).addToBackStack(null).commit();
+
                     break;
             }
             // delay the dismissal of the progress bar
@@ -111,6 +157,46 @@ public class MainActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                 }
             }, 2000);
+        }
+    }
+
+    // activated by the onSelectedItem eventListener in the management fragment
+    // sets the visibility of all items in fragment based on choice in spinner
+    public void handleSelection(View view, int position){
+        Log.d("click", "works? ");
+        View payingView = findViewById(R.id.payingView);
+        paymentsPresentation = findViewById(R.id.recycleBuildingIncome);
+        View allPaymentsPerTenantView = findViewById(R.id.allPaymentsPerTenantView);
+        View apartmentMonthsPaidView = findViewById(R.id.apartmentMonthsPaidView);
+
+        switch (position){
+            case 1:
+                apartmentMonthsPaidView.setVisibility(View.VISIBLE);
+                payingView.setVisibility(View.GONE);
+                paymentsPresentation.setVisibility(View.GONE);
+                allPaymentsPerTenantView.setVisibility(View.GONE);
+                break;
+            case 2:
+                allPaymentsPerTenantView.setVisibility(View.VISIBLE);
+                paymentsPresentation.setVisibility(View.GONE);
+                apartmentMonthsPaidView.setVisibility(View.GONE);
+                payingView.setVisibility(View.GONE);
+                getAllPaymentsPerTenant();
+                break;
+            case 3:
+                payingView.setVisibility(View.VISIBLE);
+                paymentsPresentation.setVisibility(View.GONE);
+                allPaymentsPerTenantView.setVisibility(View.GONE);
+                apartmentMonthsPaidView.setVisibility(View.GONE);
+                break;
+            case 4:
+                paymentsPresentation.setVisibility(View.VISIBLE);
+                apartmentMonthsPaidView.setVisibility(View.GONE);
+                payingView.setVisibility(View.GONE);
+                allPaymentsPerTenantView.setVisibility(View.GONE);
+                updateBuildingPayments();
+                break;
+
         }
     }
 
@@ -125,36 +211,40 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //for home owner association
-    // triggered on click of the plus button - makes the mini form of updating payments appear
-    public void visiblePayment(View view) {
-        apartment = findViewById(R.id.plus1);
-        month = findViewById(R.id.plus2);
-        payment = findViewById(R.id.plus3);
-        update = findViewById(R.id.updateButton);
-        apartment.setVisibility(View.VISIBLE);
-        month.setVisibility(View.VISIBLE);
-        payment.setVisibility(View.VISIBLE);
-        update.setVisibility(View.VISIBLE);
-    }
-
     // gets called from the home owner form
     // updates the relevant apartment payment
     public void paymentUpdate(View view) {
+        apartment = findViewById(R.id.apartmentToAdd);
+        month = findViewById(R.id.monthToAdd);
+        payment = findViewById(R.id.paymentToAdd);
         String apartmentNum = apartment.getText().toString();
         String monthPaid = month.getText().toString();
         String sumPaid = payment.getText().toString();
-        HashMap<String, String> p = new HashMap<String, String>();
-        p.put(monthPaid, sumPaid);
-        DatabaseReference myRef = database.getReference("apartmentPayment/"+apartmentNum+"/"+monthPaid);
-        myRef.setValue(sumPaid);
+        DatabaseReference myRef;
+        if (Integer.parseInt(monthPaid)>0 && Integer.parseInt(monthPaid)<13){
+            myRef = database.getReference("apartmentPayment/"+apartmentNum+"/"+monthPaid);
+            myRef.setValue(sumPaid);
+            Toast.makeText(MainActivity.this, "Database Updated", Toast.LENGTH_LONG).show();
+        }
+        else{
+            Toast.makeText(MainActivity.this, "Invalid month  \nplease try again", Toast.LENGTH_LONG).show();
+        }
     }
 
     // for home owner association form
     // set the building payment field
-    public void updateBuildingPayments(View view){
-        TextView buildingIncome = findViewById(R.id.response_income);
-        buildingIncome.setText(monthsPaid.toString());
+    public void updateBuildingPayments(){
+        paymentsPresentation.setHasFixedSize(true);
+        paymentsPresentation.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        incomeArrayList = new ArrayList<>();
+        // looping over the data and updating the arraylist
+        for (String key: monthsPaid.keySet()) {
+            incomeArrayList.add(new BuildingIncomeDataModel(Months.valueOfLabel(key).toString(), String.valueOf(monthsPaid.get(key))));
+        }
+        // creating the data adapter and associating it with the arraylist containing the data
+        buildingDataAdapter = new BuildingDataAdapter(incomeArrayList, this);
+        // connecting the visual representation if the recycle view with the adapter
+        paymentsPresentation.setAdapter(buildingDataAdapter);
     }
 
     // updates the local hashes that save the current state of db to hashes
@@ -201,7 +291,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d("trial1", apartNum);
         if (apartNum != null && monthsPaidPerApartment.get(apartNum) != null)
         {
-            Log.d("trial", "offff");
             response_payment.setText(monthsPaidPerApartment.get(apartNum).toString());
         }
 
@@ -210,8 +299,8 @@ public class MainActivity extends AppCompatActivity {
 
     // home owner
     // gets all paid months of a certain apartment
-    public void getAllPaymentsPerTenant(View view) {
-        TextView allPaid = findViewById(R.id.response_all_paid);
+    public void getAllPaymentsPerTenant() {
+        TextView allPaid = findViewById(R.id.allPaymentsPerTenantView);
         allPaid.setText(monthsPaidPerApartment.toString());
     }
 
@@ -231,20 +320,91 @@ public class MainActivity extends AppCompatActivity {
                     name.setText(ten.getFirstName()+" "+ten.getLastName());
                     AN = findViewById(R.id.ApartmentNumberFromDB);
                     AN.setText(String.valueOf(ten.getApartmentNumber()));
-                    payments = findViewById(R.id.MonthlyPaymentFromDB);
                     if (apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())) != null){
-                        payments.setText(apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())).toString());
+                        // loop through all the values in the paid months of this particular apartment
+                        for (String key:
+                                apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())).keySet()) {
+                            String res="";
+                            res+=" "+Months.valueOfLabel(key); // saves month's name to display
+                            res+=" "+apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())).get(key); // save sum to display
+                            paymentsField(Months.valueOfLabel(key)); // find out which field we need to show
+
+                            // sets visibility for the required field
+                            tableRow.setVisibility(View.VISIBLE);
+                            payments.setVisibility(View.VISIBLE);
+
+                            // actual payment displayed per month
+                            payments.setText(res);
+                        }
                     }
-                    else payments.setText("No payments received");
+                    else {
+                        payments = findViewById(R.id.JANUARY);
+                        tableRow = findViewById(R.id.R1);
+                        tableRow.setVisibility(View.VISIBLE);
+                        payments.setText("No payments received");
+                    }
                 }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(MainActivity.this, "failed", Toast.LENGTH_LONG).show();
             }
+
         });
+    }
 
-
+    // for tenants => checks what month is marked as paid and based on that finds the appropriate label
+    public void paymentsField(Months m){
+        switch (m){
+            case JANUARY:
+                payments = findViewById(R.id.JANUARY);
+                tableRow = findViewById(R.id.R1);
+                break;
+            case FEBRUARY:
+                payments = findViewById(R.id.FEBRUARY);
+                tableRow = findViewById(R.id.R2);
+                break;
+            case MARCH:
+                payments = findViewById(R.id.MARCH);
+                tableRow = findViewById(R.id.R3);
+                break;
+            case APRIL:
+                payments = findViewById(R.id.APRIL);
+                tableRow = findViewById(R.id.R4);
+                break;
+            case MAY:
+                payments = findViewById(R.id.MAY);
+                tableRow = findViewById(R.id.R5);
+                break;
+            case JUNE:
+                payments = findViewById(R.id.JUNE);
+                tableRow = findViewById(R.id.R6);
+                break;
+            case JULY:
+                payments = findViewById(R.id.JULY);
+                tableRow = findViewById(R.id.R7);
+                break;
+            case AUGUST:
+                payments = findViewById(R.id.AUGUST);
+                tableRow = findViewById(R.id.R8);
+                break;
+            case SEPTEMBER:
+                payments = findViewById(R.id.SEPTEMBER);
+                tableRow = findViewById(R.id.R9);
+                break;
+            case OCTOBER:
+                payments = findViewById(R.id.OCTOBER);
+                tableRow = findViewById(R.id.R10);
+                break;
+            case NOVEMBER:
+                payments = findViewById(R.id.NOVEMBER);
+                tableRow = findViewById(R.id.R11);
+                break;
+            case DECEMBER:
+                payments = findViewById(R.id.DECEMBER);
+                tableRow = findViewById(R.id.R12);
+                break;
+        }
     }
 
     // signing out of app and using intent going to login

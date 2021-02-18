@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
@@ -51,6 +52,9 @@ public class LoginActivity extends AppCompatActivity {
     private EditText pas;
     private View passwordChangeLayout;
 
+    private SharedPreferences sharedPreferences;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +64,14 @@ public class LoginActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         getAllFormInputs();
+
+        sharedPreferences = getPreferences(MODE_PRIVATE);
+
+        if( sharedPreferences.getString("keyUser" , null ) != null)
+        {
+            e.setText(sharedPreferences.getString("keyUser" , null ));
+            pas.setText(sharedPreferences.getString("keyPass" , null ));
+        }
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             //change activity
@@ -127,6 +139,10 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("keyUser" , email);
+                            editor.putString("keyPass" , password);
+                            editor.apply();
                             FirebaseUser user = mAuth.getCurrentUser();
                             String userId = user.getUid();
                             checkType(userId);

@@ -9,161 +9,143 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?attr/colorAccent"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="50px"
+            android:fontFamily="@font/amita_bold"
             android:gravity="center"
-            android:text="Hello Home owners association"
-            android:textSize="18sp" />
+            android:text="@string/hello_home_owners_association"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
 
-        <LinearLayout
+        <Spinner
+            android:id="@+id/dropdown_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:textAlignment="center" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleBuildingIncome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50px"
-            android:orientation="vertical">
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/allPaymentsPerTenantView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:fontFamily="@font/amita_bold"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/apartmentMonthsPaidView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="100dp"
+            android:layout_weight="0.8"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/headline1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.7"
-                android:text="please choose an apartment number"
-                android:textSize="18sp" />
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/amita_bold"
+                android:gravity="center"
+                android:text="@string/payments_per_apartment"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:visibility="visible" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="50px"
-                android:layout_weight="0.3"
-                android:orientation="horizontal">
+            <EditText
+                android:id="@+id/apartmentNumberToCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:hint="@string/enter_apartment_number"
+                android:inputType="number"
+                android:visibility="visible" />
 
-                <EditText
-                    android:id="@+id/apartmentNumberToCheck"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="textPersonName" />
-
-                <Button
-                    android:id="@+id/Send"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="getApartmentMonthsPaid"
-                    android:text="Send" />
-            </LinearLayout>
+            <Button
+                android:id="@+id/Send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="getApartmentMonthsPaid"
+                android:text="@string/send"
+                android:visibility="visible" />
 
             <TextView
                 android:id="@+id/reponse_rent_from_1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/ask_for_rent_paid"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="1"
-                android:onClick="getAllPaymentsPerTenant"
-                android:text="Rents Paid List" />
-
-            <TextView
-                android:id="@+id/response_all_paid"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:textSize="18sp" />
+                android:fontFamily="@font/amita_bold"
+                android:textColor="@color/white"
+                android:visibility="visible" />
 
         </LinearLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:clickable="true"
-            android:contentDescription="add payment for a tenant"
-            android:onClick="visiblePayment"
-            android:src="@drawable/money_11111"
-            app:backgroundTint="@color/teal_200" />
-
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/plus1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="Apartment Number"
-                android:inputType="number"
-                android:visibility="gone" />
-
-            <EditText
-                android:id="@+id/plus2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="Month"
-                android:inputType="number"
-                android:visibility="gone" />
-
-            <EditText
-                android:id="@+id/plus3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="Payment"
-                android:inputType="number"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/updateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|center_horizontal"
-            android:layout_marginTop="25px"
-            android:gravity="center|center_horizontal"
-            android:onClick="paymentUpdate"
-            android:text="Update"
-            android:visibility="gone" />
-
-        <LinearLayout
+            android:id="@+id/payingView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="50px"
-            android:orientation="vertical">
+            android:layout_marginTop="100dp"
+            android:layout_weight="0.8"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <Button
-                android:id="@+id/show_total_payment"
+            <EditText
+                android:id="@+id/apartmentToAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:onClick="updateBuildingPayments"
-                android:text="Total Payment" />
+                android:ems="10"
+                android:hint="@string/apartment_number"
+                android:inputType="number"
+                android:visibility="visible" />
 
-            <TextView
-                android:id="@+id/response_income"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/monthToAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:hint="@string/month"
+                android:inputType="number"
+                android:visibility="visible" />
+
+            <EditText
+                android:id="@+id/paymentToAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:hint="@string/payment"
+                android:inputType="number"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/updateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal"
+                android:layout_marginTop="25px"
+                android:gravity="center|center_horizontal"
+                android:onClick="paymentUpdate"
+                android:text="@string/update"
+                android:visibility="visible" />
         </LinearLayout>
 
     </LinearLayout>

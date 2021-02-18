@@ -4,10 +4,17 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.rachel.managetenanants.Activities.MainActivity;
 import com.rachel.managetenanants.R;
 
 /**
@@ -15,7 +22,10 @@ import com.rachel.managetenanants.R;
  * Use the {@link ManagementFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ManagementFragment extends Fragment {
+public class ManagementFragment extends Fragment implements AdapterView.OnItemSelectedListener{
+
+    private Spinner dropdown_menu;
+    private String[] choices;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,6 +71,32 @@ public class ManagementFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_management, container, false);
+        View view = inflater.inflate(R.layout.fragment_management, container, false);
+        // create the drop down menu
+        dropdown_menu = view.findViewById(R.id.dropdown_menu);
+        choices = getResources().getStringArray(R.array.choices);
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.choices, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dropdown_menu.setAdapter(adapter);
+        dropdown_menu.setOnItemSelectedListener(this); // adding the event listener to the spinner
+        return view;
+    }
+
+
+    // methods implemented for the adapter view interface
+    // onSelected item helps as an event listener to choice in spinner
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (parent.getId() == dropdown_menu.getId())
+        {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.handleSelection(view, position);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

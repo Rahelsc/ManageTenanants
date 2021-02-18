@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="choices">
+        <item>Please Choose What To Do</item>
+        <item>Get a specific apartment\'s payment</item>
+        <item>Get all apartments\' payments by month</item>
+        <item>Add payment to an apartment</item>
+        <item>Get all building income</item>
+    </string-array>
+
+</resources>
