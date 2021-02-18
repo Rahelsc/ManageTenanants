@@ -108,7 +108,6 @@ public class LoginActivity extends AppCompatActivity {
 
     // to check which type the current user is in order to load the correct fragment
     private void checkType(String userId){
-        Log.d("dov", "checkType: ");
         DatabaseReference myRef = database.getReference("typeDefined");
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -118,7 +117,6 @@ public class LoginActivity extends AppCompatActivity {
                     DataSnapshot user = dataSnapshot.child(userId);
                     String userType = user.getValue(String.class);
                     actualUserType = userType;
-                    Log.d("new try", actualUserType);
                     sendMetoMain();
                 }
             }
@@ -154,12 +152,10 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
-        Log.d("dovv", "signIn: 2");
     }
 
 
     private void sendMetoMain(){
-        Log.d("shai", "sendMetoMain: ");
         Intent sendUserUI = new Intent(LoginActivity.this, MainActivity.class);
         // type of user being sent to main to load correct fragment
         sendUserUI.putExtra(KeyUserType, actualUserType);
@@ -193,13 +189,12 @@ public class LoginActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Log.d("hezi", "Password updated");
                                             visibleGoneOfPasswordForm();
                                             Toast.makeText(LoginActivity.this, "Password Changed, please re-authenticate to login",
                                                     Toast.LENGTH_LONG).show();
                                         } else {
-                                            Log.d("off", "Error password not updated");
-                                        }
+                                            Toast.makeText(LoginActivity.this, "Action failed, please re-authenticate",
+                                                    Toast.LENGTH_LONG).show();                                        }
                                     }
                                 });
                             } else {

@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -138,14 +139,13 @@ public class MainActivity extends AppCompatActivity {
             signOutButton.setVisibility(View.VISIBLE);
 
             actualUserType = getIntent().getStringExtra(KeyUserType);
-            Log.d("yoohoo", "please?: "+actualUserType);
             switch (actualUserType){
                 case "com.rachel.managetenanants.Classes.Tenant":
                     fragmentTransaction.replace(R.id.fragmentPlacementMain,new TenantFragment()).addToBackStack(null).commit();
                     getTenantDetails();
                     break;
                 case "com.rachel.managetenanants.Classes.HomeOwnerAssociation":
-                    fragmentTransaction.replace(R.id.fragmentPlacementMain,new ManagementFragment()).addToBackStack(null).commit();
+                     fragmentTransaction.replace(R.id.fragmentPlacementMain,new ManagementFragment()).addToBackStack(null).commit();
                     break;
             }
             // delay the dismissal of the progress bar
@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                 }
             }, 2000);
+
         }
     }
 
@@ -206,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
             send.putExtra(KEY, selectedId);
             startActivity(send);
         }
+        else
+            Toast.makeText(MainActivity.this, "You must make a choice to proceed", Toast.LENGTH_LONG).show();
+
     }
 
     // gets called from the home owner form
@@ -336,17 +340,20 @@ public class MainActivity extends AppCompatActivity {
                     name.setText(ten.getFirstName()+" "+ten.getLastName());
                     AN = findViewById(R.id.ApartmentNumberFromDB);
                     AN.setText(String.valueOf(ten.getApartmentNumber()));
+
                     if (apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())) != null){
                         RecyclerView tenantPayments = findViewById(R.id.tenantPayments);
                         tenantPayments.setVisibility(View.VISIBLE);
                         tenantPayments.setHasFixedSize(true);
                         tenantPayments.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false));
                         ArrayList<MonthSumDataModel> tenantPaymentsArrayList = new ArrayList<>();
+
                         // looping over the data and updating the arrayList
                         for (String key: apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())).keySet()){
                             tenantPaymentsArrayList.add(new MonthSumDataModel(Months.valueOfLabel(key).toString(),
                                     apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())).get(key)));
                         }
+
                         // creating the data adapter and associating it with the arraylist containing the data
                         BuildingDataAdapter tenantDataAdapter = new BuildingDataAdapter(tenantPaymentsArrayList, getBaseContext());
                         // connecting the visual representation if the recycle view with the adapter

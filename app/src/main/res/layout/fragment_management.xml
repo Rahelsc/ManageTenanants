@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorAccent"
         android:orientation="vertical">
 
         <TextView
@@ -17,10 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50px"
-            android:fontFamily="@font/amita_bold"
             android:gravity="center"
             android:text="@string/hello_home_owners_association"
-            android:textColor="@color/white"
             android:textSize="24sp" />
 
         <Spinner
@@ -56,11 +53,9 @@
                 android:id="@+id/headline1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/amita_bold"
                 android:gravity="center"
                 android:text="@string/payments_per_apartment"
-                android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:visibility="visible" />
 
             <EditText
@@ -84,13 +79,12 @@
 
             <TextView
                 android:id="@+id/reponse_rent_from_1"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_marginLeft="100dp"
                 android:layout_marginTop="20dp"
                 android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:visibility="visible" />
 
         </LinearLayout>

@@ -4,70 +4,72 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorAccent"
     tools:context=".Fragments.TenantFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="?attr/colorAccent"
+        android:layout_marginTop="25dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.95"
-            android:fontFamily="@font/amita_bold"
-            android:gravity="center"
-            android:text="Dear Tenant"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/fullTenantName"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="0.95"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:text="Tenant Name"
+                android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/textView7"
+            <TextView
+                android:id="@+id/fullTenantName"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginLeft="25dp"
+                android:layout_weight="0.95"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
             android:layout_weight="0.95"
-            android:fontFamily="@font/amita_bold"
-            android:gravity="center"
-            android:text="Apartment Number"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/ApartmentNumberFromDB"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="0.95"
-            android:gravity="center"
-            android:textAlignment="gravity"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:text="Apartment Number"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/ApartmentNumberFromDB"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginLeft="25dp"
+                android:gravity="center"
+                android:textAlignment="gravity"
+                android:textSize="20sp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView8"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
             android:layout_weight="0.95"
-            android:fontFamily="@font/amita_bold"
-            android:gravity="center"
-            android:text="Monthly Payments Made"
+            android:text="Monthly Payments Made:"
             android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tenantPayments"
@@ -82,11 +84,11 @@
             android:id="@+id/noPayment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
             android:layout_weight="0.35"
             android:text="@string/no_payments_made"
             android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:visibility="gone" />
 
     </LinearLayout>

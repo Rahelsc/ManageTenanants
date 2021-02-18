@@ -2,7 +2,6 @@ package com.rachel.managetenanants.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,8 +24,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.rachel.managetenanants.Classes.HomeOwnerAssociation;
 import com.rachel.managetenanants.Classes.Tenant;
-import com.rachel.managetenanants.Fragments.HomeAssociationDetailsFragment;
-import com.rachel.managetenanants.Fragments.TenantDetailsFragment;
 import com.rachel.managetenanants.R;
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -38,7 +34,6 @@ public class RegistrationActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private final String KEY = "userChoice";
-    private Fragment target;
     private FirebaseDatabase database;
     private final String SenderKey = "ISent";
     private String actualUserType;
@@ -56,8 +51,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private String lastNameText;
     private EditText idEdit;
     private String idText;
-
-
+    private EditText apartmentEdit;
+    private EditText seniorityEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,32 +62,33 @@ public class RegistrationActivity extends AppCompatActivity {
         chosenType = getIntent().getIntExtra(KEY,0);
         database = FirebaseDatabase.getInstance();
 
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-
         firstNameEdit = findViewById(R.id.FirstName);
-        firstNameText = firstNameEdit.getText().toString();
         lastNameEdit = findViewById(R.id.LastName);
-        lastNameText = lastNameEdit.getText().toString();
         idEdit = findViewById(R.id.Id);
-        idText = idEdit.getText().toString();
+
 
         // choosing which fragment to add to the activity based on previous choice - tenant / homeowner
         switch (chosenType){
             case 1:
-                fragmentTransaction.add(R.id.tenantOrHome,new TenantDetailsFragment()).addToBackStack(null).commit();
+                Log.d("chosen", String.valueOf(chosenType));
+
+                apartmentEdit = findViewById(R.id.apartmentNumber2);
+                apartmentEdit.setVisibility(View.VISIBLE);
                 break;
             case 2:
-                fragmentTransaction.add(R.id.tenantOrHome,new HomeAssociationDetailsFragment()).addToBackStack(null).commit();
+                seniorityEdit = findViewById(R.id.textSeniority);
+                seniorityEdit.setVisibility(View.VISIBLE);
                 break;
         }
-
     }
 
 
     // ----------------------------------
     public void makeRequired(View view){
-        Log.d("hezzzzzzziiiiiii", firstNameText);
+        firstNameText = firstNameEdit.getText().toString();
+        lastNameText = lastNameEdit.getText().toString();
+        idText = idEdit.getText().toString();
+
         if (firstNameText != null && lastNameText != null && idText != null){
             checkIfUserExists();
         }
@@ -139,8 +135,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
     // makes sure apartment number isn't duplicate
     // and only then create the tenant
-
-    // ------------------------------check!!!!!!!!!!!!!!!!!!
     private void againstDuplicateApartment(String numberOfApartment, String uid){
         refApartmentNumbersOnly = database.getReference("apartmentNumbersOnly");
         apartmentListener =new ValueEventListener() {
@@ -159,6 +153,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     }
                 }
                 if (apartmentDoesntExist){
+
                     DatabaseReference myRef2 = database.getReference("apartmentNumbersOnly").child(uid);
                     myRef2.setValue(numberOfApartment);
                     Tenant t = new Tenant(firstNameText, lastNameText, idText, Integer.parseInt(numberOfApartment));
@@ -199,10 +194,8 @@ public class RegistrationActivity extends AppCompatActivity {
                             DatabaseReference myRef1 = database.getReference("ids").child(uid);
                             myRef1.setValue(id);
 
-                            // getting the current fragment that's active on the activity
-                            target = fragmentManager.getFragments().get(0);
                             if (chosenType == 1){
-                                String apartmentNumber = ((EditText)findViewById(R.id.apartmentNumber)).getText().toString();
+                                String apartmentNumber = apartmentEdit.getText().toString();
                                 if (!equals(apartmentNumber))
                                     againstDuplicateApartment(apartmentNumber, uid);
                                 // happens if apartment number field isn't filled
@@ -211,7 +204,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                 }
                             } else {
                                 // registerCallSeniority gets the input from the homeowners fragment
-                                String seniority = ((EditText)findViewById(R.id.TextSeniority)).getText().toString();
+                                String seniority = seniorityEdit.getText().toString();;
                                 HomeOwnerAssociation h;
                                 if (!seniority.equals("")) {
                                     h = new HomeOwnerAssociation(firstNameText, lastNameText, idText, Integer.parseInt(seniority));

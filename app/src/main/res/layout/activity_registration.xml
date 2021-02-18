@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:layout_weight="0.9"
         android:ems="10"
-        android:hint="password:"
+        android:hint="Password:"
         android:inputType="textPassword" />
 
     <EditText
@@ -52,30 +52,34 @@
         android:hint="id:"
         android:inputType="textPersonName" />
 
-    <LinearLayout
+    <EditText
+        android:id="@+id/apartmentNumber2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
-        android:orientation="vertical">
+        android:layout_weight="0.9"
+        android:ems="10"
+        android:hint="Apartment Number"
+        android:inputType="number"
+        android:visibility="gone" />
 
-        <FrameLayout
-            android:id="@+id/tenantOrHome"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.2">
+    <EditText
+        android:id="@+id/textSeniority"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.9"
+        android:ems="10"
+        android:hint="Seniority"
+        android:inputType="number"
+        android:visibility="gone" />
 
-        </FrameLayout>
-
-        <Button
-            android:id="@+id/buttonSignUpDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="0.8"
-            android:onClick="makeRequired"
-            android:paddingLeft="150px"
-            android:paddingRight="150px"
-            android:text="Sign Up" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/buttonSignUpDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:onClick="makeRequired"
+        android:paddingLeft="150px"
+        android:paddingRight="150px"
+        android:text="Sign Up" />
 
 </LinearLayout>
