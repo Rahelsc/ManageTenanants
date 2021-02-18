@@ -1,6 +1,6 @@
 package com.rachel.managetenanants.Classes;
 
-public class BuildingIncomeDataModel {
+public class MonthSumDataModel {
     private String month;
     private String sum;
 
@@ -20,7 +20,7 @@ public class BuildingIncomeDataModel {
         this.sum = sum;
     }
 
-    public BuildingIncomeDataModel(String month, String sum) {
+    public MonthSumDataModel(String month, String sum) {
         this.month = month;
         this.sum = sum;
     }

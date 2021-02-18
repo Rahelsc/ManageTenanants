@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.rachel.managetenanants.Classes.BuildingDataAdapter;
-import com.rachel.managetenanants.Classes.BuildingIncomeDataModel;
+import com.rachel.managetenanants.Classes.MonthSumDataModel;
 import com.rachel.managetenanants.Classes.Tenant;
 import com.rachel.managetenanants.Fragments.ChoiceOfUserFragment;
 import com.rachel.managetenanants.Fragments.ManagementFragment;
@@ -96,14 +95,12 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView name;
     private TextView AN;
-    private TextView payments;
-    private TableRow tableRow;
 
     private ProgressBar progressBar;
     private Button signOutButton;
 
     private RecyclerView paymentsPresentation;
-    private ArrayList<BuildingIncomeDataModel> incomeArrayList;
+    private ArrayList<MonthSumDataModel> incomeArrayList;
     private BuildingDataAdapter buildingDataAdapter;
 
 
@@ -147,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case "com.rachel.managetenanants.Classes.HomeOwnerAssociation":
                     fragmentTransaction.replace(R.id.fragmentPlacementMain,new ManagementFragment()).addToBackStack(null).commit();
-
                     break;
             }
             // delay the dismissal of the progress bar
@@ -239,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         incomeArrayList = new ArrayList<>();
         // looping over the data and updating the arraylist
         for (String key: monthsPaid.keySet()) {
-            incomeArrayList.add(new BuildingIncomeDataModel(Months.valueOfLabel(key).toString(), String.valueOf(monthsPaid.get(key))));
+            incomeArrayList.add(new MonthSumDataModel(Months.valueOfLabel(key).toString(), String.valueOf(monthsPaid.get(key))));
         }
         // creating the data adapter and associating it with the arraylist containing the data
         buildingDataAdapter = new BuildingDataAdapter(incomeArrayList, this);
@@ -294,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
             response_payment.setText(monthsPaidPerApartment.get(apartNum).toString());
         }
 
-        else response_payment.setText("No payment received");
+        else response_payment.setText("No payments made");
     }
 
     // home owner
@@ -310,6 +306,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         String userId = user.getUid();
 
+        // get all updated data of this particular tenant
         DatabaseReference ref = database.getReference("Tenants").child(userId);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -321,27 +318,24 @@ public class MainActivity extends AppCompatActivity {
                     AN = findViewById(R.id.ApartmentNumberFromDB);
                     AN.setText(String.valueOf(ten.getApartmentNumber()));
                     if (apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())) != null){
-                        // loop through all the values in the paid months of this particular apartment
-                        for (String key:
-                                apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())).keySet()) {
-                            String res="";
-                            res+=" "+Months.valueOfLabel(key); // saves month's name to display
-                            res+=" "+apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())).get(key); // save sum to display
-                            paymentsField(Months.valueOfLabel(key)); // find out which field we need to show
-
-                            // sets visibility for the required field
-                            tableRow.setVisibility(View.VISIBLE);
-                            payments.setVisibility(View.VISIBLE);
-
-                            // actual payment displayed per month
-                            payments.setText(res);
+                        RecyclerView tenantPayments = findViewById(R.id.tenantPayments);
+                        tenantPayments.setVisibility(View.VISIBLE);
+                        tenantPayments.setHasFixedSize(true);
+                        tenantPayments.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false));
+                        ArrayList<MonthSumDataModel> tenantPaymentsArrayList = new ArrayList<>();
+                        // looping over the data and updating the arrayList
+                        for (String key: apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())).keySet()){
+                            tenantPaymentsArrayList.add(new MonthSumDataModel(Months.valueOfLabel(key).toString(),
+                                    apartmentPlusPayments.get(String.valueOf(ten.getApartmentNumber())).get(key)));
                         }
+                        // creating the data adapter and associating it with the arraylist containing the data
+                        BuildingDataAdapter tenantDataAdapter = new BuildingDataAdapter(tenantPaymentsArrayList, getBaseContext());
+                        // connecting the visual representation if the recycle view with the adapter
+                        tenantPayments.setAdapter(tenantDataAdapter);
                     }
                     else {
-                        payments = findViewById(R.id.JANUARY);
-                        tableRow = findViewById(R.id.R1);
-                        tableRow.setVisibility(View.VISIBLE);
-                        payments.setText("No payments received");
+                        TextView noPayment = findViewById(R.id.noPayment);
+                        noPayment.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -351,60 +345,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-    }
-
-    // for tenants => checks what month is marked as paid and based on that finds the appropriate label
-    public void paymentsField(Months m){
-        switch (m){
-            case JANUARY:
-                payments = findViewById(R.id.JANUARY);
-                tableRow = findViewById(R.id.R1);
-                break;
-            case FEBRUARY:
-                payments = findViewById(R.id.FEBRUARY);
-                tableRow = findViewById(R.id.R2);
-                break;
-            case MARCH:
-                payments = findViewById(R.id.MARCH);
-                tableRow = findViewById(R.id.R3);
-                break;
-            case APRIL:
-                payments = findViewById(R.id.APRIL);
-                tableRow = findViewById(R.id.R4);
-                break;
-            case MAY:
-                payments = findViewById(R.id.MAY);
-                tableRow = findViewById(R.id.R5);
-                break;
-            case JUNE:
-                payments = findViewById(R.id.JUNE);
-                tableRow = findViewById(R.id.R6);
-                break;
-            case JULY:
-                payments = findViewById(R.id.JULY);
-                tableRow = findViewById(R.id.R7);
-                break;
-            case AUGUST:
-                payments = findViewById(R.id.AUGUST);
-                tableRow = findViewById(R.id.R8);
-                break;
-            case SEPTEMBER:
-                payments = findViewById(R.id.SEPTEMBER);
-                tableRow = findViewById(R.id.R9);
-                break;
-            case OCTOBER:
-                payments = findViewById(R.id.OCTOBER);
-                tableRow = findViewById(R.id.R10);
-                break;
-            case NOVEMBER:
-                payments = findViewById(R.id.NOVEMBER);
-                tableRow = findViewById(R.id.R11);
-                break;
-            case DECEMBER:
-                payments = findViewById(R.id.DECEMBER);
-                tableRow = findViewById(R.id.R12);
-                break;
-        }
     }
 
     // signing out of app and using intent going to login

@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorAccent"
     tools:context=".Fragments.TenantFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:background="?attr/colorAccent"
         android:orientation="vertical">
 
@@ -16,7 +18,7 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.9"
+            android:layout_weight="0.95"
             android:fontFamily="@font/amita_bold"
             android:gravity="center"
             android:text="Dear Tenant"
@@ -28,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_weight="0.9"
+            android:layout_weight="0.95"
             android:textColor="@color/white"
             android:textSize="24sp" />
 
@@ -37,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_weight="0.9"
+            android:layout_weight="0.95"
             android:fontFamily="@font/amita_bold"
             android:gravity="center"
             android:text="Apartment Number"
@@ -49,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_weight="0.9"
+            android:layout_weight="0.95"
             android:gravity="center"
             android:textAlignment="gravity"
             android:textColor="@color/white"
@@ -59,7 +61,7 @@
             android:id="@+id/textView8"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.9"
+            android:layout_weight="0.95"
             android:fontFamily="@font/amita_bold"
             android:gravity="center"
             android:text="Monthly Payments Made"
@@ -67,257 +69,26 @@
             android:textColor="@color/white"
             android:textSize="24sp" />
 
-        <TableLayout
-            android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tenantPayments"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.5"
-            android:gravity="center_horizontal">
+            android:layout_weight="0.35"
+            android:visibility="gone">
 
-            <TableRow
-                android:id="@+id/R1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:visibility="gone"
-                tools:visibility="gone">
+        </androidx.recyclerview.widget.RecyclerView>
 
-                <TextView
-                    android:id="@+id/JANUARY"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/R2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:visibility="gone"
-                tools:visibility="gone">
-
-                <TextView
-                    android:id="@+id/FEBRUARY"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
-
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/R3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:visibility="gone"
-                tools:visibility="gone">
-
-                <TextView
-                    android:id="@+id/MARCH"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/R4"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:visibility="gone"
-                tools:visibility="gone">
-
-                <TextView
-                    android:id="@+id/APRIL"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
-
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/R5"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:visibility="gone"
-                tools:visibility="gone">
-
-                <TextView
-                    android:id="@+id/MAY"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
-
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/R6"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:visibility="gone"
-                tools:visibility="gone">
-
-                <TextView
-                    android:id="@+id/JUNE"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
-
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/R7"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:visibility="gone"
-                tools:visibility="gone">
-
-                <TextView
-                    android:id="@+id/JULY"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/R8"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:visibility="gone"
-                tools:visibility="gone">
-
-                <TextView
-                    android:id="@+id/AUGUST"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/R9"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:gravity="center"
-                android:visibility="gone"
-                tools:visibility="gone">
-
-                <TextView
-                    android:id="@+id/SEPTEMBER"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/R10"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:visibility="gone"
-                tools:visibility="gone">
-
-                <TextView
-                    android:id="@+id/OCTOBER"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/R11"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:visibility="gone"
-                tools:visibility="gone">
-
-                <TextView
-                    android:id="@+id/NOVEMBER"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/R12"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:visibility="gone"
-                tools:visibility="gone">
-
-                <TextView
-                    android:id="@+id/DECEMBER"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:visibility="gone" />
-            </TableRow>
-        </TableLayout>
+        <TextView
+            android:id="@+id/noPayment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.35"
+            android:text="@string/no_payments_made"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:visibility="gone" />
 
     </LinearLayout>
+
 </FrameLayout>

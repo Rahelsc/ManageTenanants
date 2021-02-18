@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,11 +14,11 @@ import com.rachel.managetenanants.R;
 import java.util.ArrayList;
 
 public class BuildingDataAdapter extends RecyclerView.Adapter<BuildingDataAdapter.ViewHolder> {
-    private ArrayList<BuildingIncomeDataModel> dataModalArrayList;
+    private ArrayList<MonthSumDataModel> dataModalArrayList;
     private Context context;
 
     // constructor class for our Adapter
-    public BuildingDataAdapter(ArrayList<BuildingIncomeDataModel> dataModalArrayList, Context context) {
+    public BuildingDataAdapter(ArrayList<MonthSumDataModel> dataModalArrayList, Context context) {
         this.dataModalArrayList = dataModalArrayList;
         this.context = context;
     }
@@ -34,7 +33,7 @@ public class BuildingDataAdapter extends RecyclerView.Adapter<BuildingDataAdapte
     @Override
     public void onBindViewHolder(@NonNull BuildingDataAdapter.ViewHolder holder, int position) {
         // setting data to our views in Recycler view items.
-        BuildingIncomeDataModel modal = dataModalArrayList.get(position);
+        MonthSumDataModel modal = dataModalArrayList.get(position);
         holder.month.setText(modal.getMonth());
         holder.sum.setText(modal.getSum());
     }
